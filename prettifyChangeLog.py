@@ -70,7 +70,7 @@ originalFilename = askopenfilename(initialdir="C:\\")
 
 ##Use for testing
 ##os.chdir(r'C:\Users\gemma.wright\Jisc\OneDrive - Jisc\To -do\DM change log')
-##originalFilename = 'original.csv'
+##original_filename = 'original.csv'
 
 
 errorLogFilename = 'errorLog ' + datetime.now().strftime('%Y-%m-%d %H%M%S') + '.csv'
