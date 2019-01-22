@@ -1,7 +1,10 @@
-import csv, textwrap, openpyxl, send2trash
+import csv
+import openpyxl
+import send2trash
+import textwrap
 from datetime import datetime
-from tkinter.filedialog import askopenfilename, asksaveasfilename
 from tkinter import Tk
+from tkinter.filedialog import askopenfilename, asksaveasfilename
 from openpyxl.styles import Font
 
 # Variables
@@ -27,15 +30,21 @@ def magic_snip(row, number_errors):
         tip = row['Name']
         if tip.count(' / ') == 1:
             title, package = tip.split(' / ')
-            tipps_reader.append([row['Timestamp'], title, package, row['Event'], row['Property'], row['Actor'], row['Old'], row['New'], row['Link']])
+            tipps_reader.append(
+                [row['Timestamp'], title, package, row['Event'], row['Property'], row['Actor'], row['Old'], row['New'],
+                 row['Link']])
         elif tip.count(' / ') > 1:
             pit = tip[::-1]
-            packageRev, titleRev = pit.split(' / ', 1)
-            title = titleRev[::-1]
-            package = packageRev[::-1]
-            tipps_reader.append([row['Timestamp'], title, package, row['Event'], row['Property'], row['Actor'], row['Old'], row['New'], row['Link']])
+            package_rev, title_rev = pit.split(' / ', 1)
+            title = title_rev[::-1]
+            package = package_rev[::-1]
+            tipps_reader.append(
+                [row['Timestamp'], title, package, row['Event'], row['Property'], row['Actor'], row['Old'], row['New'],
+                 row['Link']])
         else:
-            error_log_reader.append([row['Timestamp'], row['Name'], row['Event'], row['Property'], row['Actor'], row['Old'], row['New'], row['Link']])
+            error_log_reader.append(
+                [row['Timestamp'], row['Name'], row['Event'], row['Property'], row['Actor'], row['Old'], row['New'],
+                 row['Link']])
             number_errors = number_errors + 1
     return
 
@@ -54,12 +63,10 @@ print(textwrap.fill('Click this window then press enter or return to open your f
                     'to quit.'))
 input()
 
-
 # Open original file
 
 Tk().withdraw()
-originalFilename = askopenfilename(initialdir = "C:\\")
-
+originalFilename = askopenfilename(initialdir="C:\\")
 
 ##Use for testing
 ##os.chdir(r'C:\Users\gemma.wright\Jisc\OneDrive - Jisc\To -do\DM change log')
@@ -68,7 +75,6 @@ originalFilename = askopenfilename(initialdir = "C:\\")
 
 errorLogFilename = 'errorLog ' + datetime.now().strftime('%Y-%m-%d %H%M%S') + '.csv'
 tempFilename = 'temp' + datetime.now().strftime('%Y-%m-%d %H%M%S') + '.csv'
-
 
 # Get rid of the useless rows, split the name into title and package columns.
 
@@ -80,19 +86,16 @@ with open(originalFilename, encoding='utf-8') as originalFile:
 
     tipps_reader.append(['Timestamp', 'Title', 'Package', 'Event', 'Property', 'Actor', 'Old', 'New', 'Link'])
 
-
-# magic snip
+    # magic snip
 
     for row in originalCSV:
         if row['Event'] == 'New TIPP' or row['Event'] == 'Updated TIPP':
             magic_snip(row, number_errors)
 
-
         else:
             error_log_reader.append([row['Timestamp'], row['Name'], row['Event'], row['Property'], row['Actor'],
                                      row['Old'], row['New'], row['Link']])
             number_errors = number_errors + 1
-
 
 # Save to a temp file
 
@@ -109,7 +112,6 @@ if number_errors > 0:
         for row in error_log_reader:
             errorLogWriter.writerow(row)
 
-
 # Create the Excel workbook
 
 with open(tempFilename, encoding='utf-8') as TippsFile:
@@ -121,7 +123,8 @@ with open(tempFilename, encoding='utf-8') as TippsFile:
         # Do some variables:
 
         packageName = row['Package']
-        shortName = (packageName[:25] + '...' if len(packageName) > 25 else packageName) #truncate so it doesn't break Excel
+        shortName = (
+            packageName[:25] + '...' if len(packageName) > 25 else packageName)  # truncate so it doesn't break Excel
 
         # Get rid of non-Jisc packages
 
@@ -140,13 +143,13 @@ with open(tempFilename, encoding='utf-8') as TippsFile:
         else:
             # create sheet
 
-            for i in range(1, len(packageList)+2):
-                sheetName = shortName.replace(':','_') + ' ' + str(i)  # replace : with _ to not break Excel
+            for i in range(1, len(packageList) + 2):
+                sheetName = shortName.replace(':', '_') + ' ' + str(i)  # replace : with _ to not break Excel
 
                 if sheetName in packageList.values():
                     continue
                 else:
-                    sheet = workbook.create_sheet(title = sheetName)
+                    sheet = workbook.create_sheet(title=sheetName)
                     # add to packageList
                     packageList[packageName] = sheetName
                     # add header
@@ -154,7 +157,9 @@ with open(tempFilename, encoding='utf-8') as TippsFile:
                     # add column headings
                     sheet.append(['Timestamp', 'Title', 'Package', 'Event', 'Property', 'Old', 'New'])
                     # add data to row 2
-                    sheet.append([row['Timestamp'], row['Title'], row['Package'], row['Event'], row['Property'], row['Old'], row['New']])
+                    sheet.append(
+                        [row['Timestamp'], row['Title'], row['Package'], row['Event'], row['Property'], row['Old'],
+                         row['New']])
                     break
 
 # Create summary page
@@ -175,10 +180,8 @@ sheet.append(['End date:', endDate])
 sheet['A5'] = 'Packages changed:'
 sheet['B5'] = 'Sheet name:'
 
-
 for i in packageList:
     sheet.append([i, packageList[i]])
-
 
 # Prettify the worksheets
 fontBold = Font(bold=True)
@@ -186,8 +189,8 @@ fontNotBold = Font(bold=False)
 
 for sheet in workbook.worksheets:
     sheet['A1'].font = fontBold
-    for i in range(1,8):
-        sheet.cell(row = 2, column = i).font = fontBold
+    for i in range(1, 8):
+        sheet.cell(row=2, column=i).font = fontBold
     sheet.column_dimensions['A'].width = 19.14
     sheet.column_dimensions['B'].width = 45
     sheet.column_dimensions['C'].width = 45
@@ -195,7 +198,6 @@ for sheet in workbook.worksheets:
     sheet.column_dimensions['E'].width = 30
     sheet.column_dimensions['F'].width = 30
     sheet.column_dimensions['G'].width = 30
-
 
 # Prettify summary
 
@@ -209,7 +211,6 @@ sheet['B5'].font = fontBold
 sheet.column_dimensions['A'].width = 85
 sheet.column_dimensions['B'].width = 30
 
-
 # End of program stuff
 
 print(textwrap.fill('The change log is ready to save. There were ' + str(number_errors) + ' error(s).'))
@@ -220,15 +221,14 @@ print()
 print(textwrap.fill('Press return to save the file.'))
 input()
 
-outputFilename = asksaveasfilename(initialfile = 'JC changes ' + startDate + ' to ' + endDate,
-                                   defaultextension = ".xlsx")
+outputFilename = asksaveasfilename(initialfile='JC changes ' + startDate + ' to ' + endDate,
+                                   defaultextension=".xlsx")
 
 ##Use for testing
 ##outputFilename = 'output' + datetime.now().strftime('%Y-%m-%d %H%M%S')  + '.xlsx'            
 
-##Save the workbook
+
+# Save the workbook
 
 workbook.save(outputFilename)
 send2trash.send2trash(tempFilename)
-
-
