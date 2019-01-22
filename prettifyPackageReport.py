@@ -45,7 +45,15 @@ workbook = openpyxl.Workbook()
 workbook['Sheet'].title = 'New packages'
 sheet = workbook.active
 
+with open(original_filename, encoding='utf-8') as original_file:
+    original_header = csv.reader(original_file)
+    header_list = list(original_header)
+    start_date = header_list[1][0].strip().replace(r'"', '')
+    end_date = header_list[1][1].strip().replace(r'"', '')
 
+sheet['A1'] = 'New packages on KB+'
+sheet.append(['Start date:', start_date])
+sheet.append(['End date:', end_date])
 
 # todo put list of packages in excel file
 
