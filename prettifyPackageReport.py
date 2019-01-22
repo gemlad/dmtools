@@ -48,6 +48,7 @@ sheet = workbook.active
 
 
 # todo put list of packages in excel file
+
 sheet['A5'] = 'Packages added:'
 for i in package_list:
     sheet.append([i])
