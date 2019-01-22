@@ -28,14 +28,14 @@ with open(original_filename, encoding='utf-8') as original_file:
         next(original_file)
 
     original_csv = csv.DictReader(original_file)
-    package_list = {}
-    index = 0
+    package_list = []
+
     for row in original_csv:
-        if row['Name'] in package_list.values():
+        if row['Name'] in package_list:
             continue
         else:
-            package_list[index] = row['Name']
-            index = index + 1
+            package_list.append(row['Name'])
+
 
 print(package_list)
 
@@ -50,7 +50,7 @@ sheet = workbook.active
 # todo put list of packages in excel file
 sheet['A5'] = 'Packages added:'
 for i in package_list:
-    sheet.append([package_list[i]])
+    sheet.append([i])
 
 # todo prettify
 
