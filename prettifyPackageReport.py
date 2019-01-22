@@ -1,18 +1,13 @@
 import csv
 import os
-import openpyxl
-import send2trash
-import textwrap
 from datetime import datetime
-from tkinter import Tk
-from tkinter.filedialog import askopenfilename, asksaveasfilename
+import openpyxl
 from openpyxl.styles import Font
-
 
 # todo print instructions
 
 
-# open file
+# todo open file
 # Tk().withdraw()
 # original_filename = askopenfilename(initialdir="C:\\")
 
@@ -37,9 +32,7 @@ with open(original_filename, encoding='utf-8') as original_file:
             package_list.append(row['Name'])
 
 
-print(package_list)
-
-# todo put dates on excel file
+# put dates on excel file
 
 workbook = openpyxl.Workbook()
 workbook['Sheet'].title = 'New packages'
@@ -49,19 +42,40 @@ with open(original_filename, encoding='utf-8') as original_file:
     original_header = csv.reader(original_file)
     header_list = list(original_header)
     start_date = header_list[1][0].strip().replace(r'"', '')
-    end_date = header_list[1][1].strip().replace(r'"', '')
+    end_date = datetime.strptime(header_list[1][1].strip().replace(r'"', ''), '%Y-%m-%d').strftime('%d/%m/%Y')
+
+    print(header_list[1][0])
+    print(header_list[1][1])
+    print(start_date, end_date)
 
 sheet['A1'] = 'New packages on KB+'
 sheet.append(['Start date:', start_date])
 sheet.append(['End date:', end_date])
 
-# todo put list of packages in excel file
+
+# put list of packages in excel file
 
 sheet['A5'] = 'Packages added:'
+sheet['B5'] = len(package_list)
 for i in package_list:
     sheet.append([i])
 
-# todo prettify
+
+# prettify
+
+font_bold = Font(bold=True)
+font_not_bold = Font(bold=False)
+
+sheet['A1'].font = font_bold
+sheet['A2'].font = font_not_bold
+sheet['B2'].font = font_not_bold
+sheet['A5'].font = font_bold
+sheet['B5'].font = font_bold
+
+sheet.column_dimensions['A'].width = 85
+sheet.column_dimensions['B'].width = 30
+
+
 
 
 # todo save file
