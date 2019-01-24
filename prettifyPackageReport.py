@@ -1,11 +1,22 @@
 import csv
-# import os
+import os
 import textwrap
-from datetime import datetime
+import datetime
 import openpyxl
 from openpyxl.styles import Font
 from tkinter import Tk
 from tkinter.filedialog import askopenfilename, asksaveasfilename
+
+
+def format_date(date_string):
+    try:
+        iso_date_string = datetime.datetime.strptime(date_string, '%d/%m/%Y').strftime('%Y-%m-%d')
+
+    except ValueError:
+        iso_date_string = datetime.datetime.strptime(date_string, '%Y-%m-%d').strftime('%Y-%m-%d')
+
+    return iso_date_string
+
 
 # print instructions
 
@@ -57,8 +68,14 @@ sheet = workbook.active
 with open(original_filename, encoding='utf-8') as original_file:
     original_header = csv.reader(original_file)
     header_list = list(original_header)
-    start_date = datetime.strptime(header_list[1][0].strip().replace(r'"', ''), '%d/%m/%Y').strftime('%Y-%m-%d')
-    end_date = header_list[1][1].strip().replace(r'"', '')
+
+    start_date_str = header_list[1][0].strip().replace(r'"', '')
+    end_date_str = header_list[1][1].strip().replace(r'"', '')
+
+
+    start_date = format_date(start_date_str)
+    end_date = format_date(end_date_str)
+
 
 sheet['A1'] = 'New packages on KB+'
 sheet.append(['Start date:', start_date])
@@ -99,6 +116,6 @@ outputFilename = asksaveasfilename(initialfile='New packages ' + start_date + ' 
                                    defaultextension=".xlsx")
 
 # # Use for testing
-# outputFilename = 'output' + datetime.now().strftime('%Y-%m-%d %H%M%S')  + '.xlsx'
+# outputFilename = 'output' + datetime.datetime.now().strftime('%Y-%m-%d %H%M%S')  + '.xlsx'
 
 workbook.save(outputFilename)
