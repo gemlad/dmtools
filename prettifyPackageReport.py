@@ -1,19 +1,35 @@
 import csv
-import os
+# import os
+import textwrap
 from datetime import datetime
 import openpyxl
 from openpyxl.styles import Font
+from tkinter import Tk
+from tkinter.filedialog import askopenfilename, asksaveasfilename
 
-# todo print instructions
+# print instructions
 
+print(textwrap.fill('Prettify Package Report'))
+print()
+print(textwrap.fill('This program will format a DM change log to be sent to the community.'))
+print()
+print(textwrap.fill('You will need to run a DM change log report with the following options:'))
+print(textwrap.fill(' - The correct dates'))
+print(textwrap.fill(' - ALL (Real Users)'))
+print(textwrap.fill(' - Packages'))
+print(textwrap.fill(' - New Items'))
+print()
+print(textwrap.fill('Click this window then press enter or return to open your file. You can press Ctrl-C at any time'
+                    ' to quit.'))
+input()
 
-# todo open file
-# Tk().withdraw()
-# original_filename = askopenfilename(initialdir="C:\\")
+# open file
+Tk().withdraw()
+original_filename = askopenfilename(initialdir="C:\\")
 
-# Use for testing
-os.chdir(r'C:\Users\gemma.wright\Jisc\OneDrive - Jisc\To -do\DM change log')
-original_filename = 'original.csv'
+# # Use for testing
+# os.chdir(r'C:\Users\gemma.wright\Jisc\OneDrive - Jisc\To -do\DM change log')
+# original_filename = 'original.csv'
 
 
 # for each row in file, add package to a list if it's not there already
@@ -41,12 +57,8 @@ sheet = workbook.active
 with open(original_filename, encoding='utf-8') as original_file:
     original_header = csv.reader(original_file)
     header_list = list(original_header)
-    start_date = header_list[1][0].strip().replace(r'"', '')
-    end_date = datetime.strptime(header_list[1][1].strip().replace(r'"', ''), '%Y-%m-%d').strftime('%d/%m/%Y')
-
-    print(header_list[1][0])
-    print(header_list[1][1])
-    print(start_date, end_date)
+    start_date = datetime.strptime(header_list[1][0].strip().replace(r'"', ''), '%d/%m/%Y').strftime('%Y-%m-%d')
+    end_date = header_list[1][1].strip().replace(r'"', '')
 
 sheet['A1'] = 'New packages on KB+'
 sheet.append(['Start date:', start_date])
@@ -78,9 +90,15 @@ sheet.column_dimensions['B'].width = 30
 
 
 
-# todo save file
+# save file
 
-# Use for testing
-outputFilename = 'output' + datetime.now().strftime('%Y-%m-%d %H%M%S')  + '.xlsx'
+print(textwrap.fill('The change log is ready to save. Click in this window then press return to save the file.'))
+input()
+
+outputFilename = asksaveasfilename(initialfile='New packages ' + start_date + ' to ' + end_date,
+                                   defaultextension=".xlsx")
+
+# # Use for testing
+# outputFilename = 'output' + datetime.now().strftime('%Y-%m-%d %H%M%S')  + '.xlsx'
 
 workbook.save(outputFilename)
