@@ -68,9 +68,9 @@ input()
 Tk().withdraw()
 originalFilename = askopenfilename(initialdir="C:\\")
 
-##Use for testing
-##os.chdir(r'C:\Users\gemma.wright\Jisc\OneDrive - Jisc\To -do\DM change log')
-##original_filename = 'original.csv'
+## Use for testing
+# os.chdir(r'C:\Users\gemma.wright\Jisc\OneDrive - Jisc\To -do\DM change log')
+# original_filename = 'original.csv'
 
 
 errorLogFilename = 'errorLog ' + datetime.now().strftime('%Y-%m-%d %H%M%S') + '.csv'
@@ -224,8 +224,8 @@ input()
 outputFilename = asksaveasfilename(initialfile='JC changes ' + startDate + ' to ' + endDate,
                                    defaultextension=".xlsx")
 
-##Use for testing
-##outputFilename = 'output' + datetime.now().strftime('%Y-%m-%d %H%M%S')  + '.xlsx'            
+## Use for testing
+# outputFilename = 'output' + datetime.now().strftime('%Y-%m-%d %H%M%S')  + '.xlsx'
 
 
 # Save the workbook

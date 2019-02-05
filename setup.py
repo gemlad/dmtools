@@ -8,5 +8,5 @@ setup(
     license='',
     author='gemma.wright',
     author_email='',
-    description=''
+    description='', install_requires=['openpyxl', 'send2trash']
 )
